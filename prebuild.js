@@ -6,6 +6,7 @@ var getTarPath = require('./util').getTarPath
 var build = require('./build')
 var strip = require('./strip')
 var pack = require('./pack')
+var semver = require('semver')
 
 function prebuild (opts, target, runtime, callback) {
   var pkg = opts.pkg
@@ -24,6 +25,12 @@ function prebuild (opts, target, runtime, callback) {
   // --target can be target or abi
   target = getTarget(target, runtime)
   var abi = getAbi(target, runtime)
+  
+  if (runtime == 'electron') {
+    var sem_ver = semver.parse(target)
+    buildLog('node-pre-gyp fixer: abi', abi, ' -> ', sem_ver.major + '.' + sem_ver.minor)
+    abi = sem_ver.major + '.' + sem_ver.minor
+  }
 
   var tarPath = getTarPath(opts, abi)
   fs.stat(tarPath, function (err, st) {
