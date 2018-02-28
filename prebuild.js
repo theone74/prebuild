@@ -26,7 +26,7 @@ function prebuild (opts, target, runtime, callback) {
   target = getTarget(target, runtime)
   var abi = getAbi(target, runtime)
   
-  if (runtime == 'electron') {
+  if (runtime == 'electron' && (process.env.FIX_ELECTRON || 0)) {
     var sem_ver = semver.parse(target)
     buildLog('node-pre-gyp fixer: abi', abi, ' -> ', sem_ver.major + '.' + sem_ver.minor)
     abi = sem_ver.major + '.' + sem_ver.minor
